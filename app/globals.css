@@ -54,6 +54,11 @@ body {
   transform: scale(1.05);
 }
 
+/* Custom gradient for radial backgrounds */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
 @keyframes float {
   0% {
     transform: translateY(0px);
@@ -215,4 +220,46 @@ button,
 }
 .text-5xl {
   font-size: 3rem;
+}
+
+/* Anime-style animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glowing effects */
+.glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+}
+
+/* Particle effects */
+@keyframes particle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+.animate-particle {
+  animation: particle-float 4s ease-in-out infinite;
 }
