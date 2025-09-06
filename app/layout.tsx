@@ -4,10 +4,12 @@ import { cn } from "@/lib/utils"
 import Navbar from "@/components/navbar"
 import ScrollToTop from "@/components/scroll-to-top"
 import { AuthProvider } from "@/contexts/auth-context"
+import { CartProvider } from "@/contexts/cart-context"
+import CartSidebar from "@/components/cart-sidebar"
 import { Toaster } from "sonner"
 import type { Metadata } from "next"
 import Script from "next/script"
-import type React from "react" // Import React
+import type React from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
@@ -42,11 +44,14 @@ export default function RootLayout({
       </head>
       <body className={cn(inter.className, "min-h-screen bg-black text-white antialiased relative")}>
         <AuthProvider>
-          <div className="fixed inset-0 bg-grid-white/[0.02] -z-10" />
-          <Navbar />
-          <main className="pt-16 md:pt-0">{children}</main>
-          <ScrollToTop />
-          <Toaster />
+          <CartProvider>
+            <div className="fixed inset-0 bg-grid-white/[0.02] -z-10" />
+            <Navbar />
+            <main className="pt-16 md:pt-0">{children}</main>
+            <ScrollToTop />
+            <CartSidebar />
+            <Toaster />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

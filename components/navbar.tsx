@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X, Twitter, User, LogOut, ChevronRight, Settings } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import AuthModal from "./auth-modal"
+import CartButton from "./cart-button"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -33,8 +34,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Prevent body scroll when mobile menu is open
-  // Remove the useEffect for scroll handling since we're handling it in handleMenuToggle
   useEffect(() => {
     return () => {
       document.body.style.removeProperty("overflow")
@@ -45,11 +44,9 @@ export default function Navbar() {
   }, [])
 
   const navItems = [
-    { href: "/projects", label: "Projects" },
     { href: "/3d-printing", label: "3D Printing" },
-    { href: "/drones", label: "Drones" },
     { href: "/products", label: "Products" },
-    { href: "/store", label: "Store" },
+    { href: "https://robonixkart.com/", label: "Store", external: true },
     { href: "/blog", label: "Blog", className: "text-yellow-500 hover:text-yellow-400" },
     { href: "/admin/users", label: "User Profiles", adminOnly: true },
   ]
@@ -104,7 +101,20 @@ export default function Navbar() {
             <div className="hidden md:flex items-center space-x-2 lg:space-x-6">
               {navItems.map(
                 (item) =>
-                  (!item.adminOnly || (user && user.email === "admin@example.com")) && (
+                  (!item.adminOnly || (user && user.email === "admin@example.com")) &&
+                  (item.external ? (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`relative px-2 py-1 transition-colors ${
+                        item.className || "text-gray-300 hover:text-white"
+                      }`}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
                     <Link
                       key={item.href}
                       href={item.href}
@@ -121,12 +131,14 @@ export default function Navbar() {
                         />
                       )}
                     </Link>
-                  ),
+                  )),
               )}
             </div>
 
-            {/* Desktop Auth & Twitter */}
+            {/* Desktop Auth, Cart & Twitter */}
             <div className="hidden md:flex items-center space-x-4">
+              <CartButton />
+
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -148,6 +160,12 @@ export default function Navbar() {
                       <Link href="/profile">
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/orders">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Orders</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -226,22 +244,41 @@ export default function Navbar() {
                           (item) =>
                             (!item.adminOnly || (user && user.email === "admin@example.com")) && (
                               <motion.div key={item.href} whileTap={{ scale: 0.95 }}>
-                                <Link
-                                  href={item.href}
-                                  className={`flex items-center justify-between py-3 px-4 rounded-lg ${
-                                    item.className || "text-gray-300 hover:text-white"
-                                  } ${pathname === item.href ? "bg-gray-800/50 text-white" : ""}`}
-                                  onClick={handleMenuToggle}
-                                >
-                                  <span className="text-base">{item.label}</span>
-                                  <ChevronRight className="h-5 w-5 text-gray-400" />
-                                </Link>
+                                {item.external ? (
+                                  <a
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`flex items-center justify-between py-3 px-4 rounded-lg ${
+                                      item.className || "text-gray-300 hover:text-white"
+                                    }`}
+                                    onClick={handleMenuToggle}
+                                  >
+                                    <span className="text-base">{item.label}</span>
+                                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                                  </a>
+                                ) : (
+                                  <Link
+                                    href={item.href}
+                                    className={`flex items-center justify-between py-3 px-4 rounded-lg ${
+                                      item.className || "text-gray-300 hover:text-white"
+                                    } ${pathname === item.href ? "bg-gray-800/50 text-white" : ""}`}
+                                    onClick={handleMenuToggle}
+                                  >
+                                    <span className="text-base">{item.label}</span>
+                                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                                  </Link>
+                                )}
                               </motion.div>
                             ),
                         )}
                       </div>
 
                       <div className="mt-6 pt-6 border-t border-gray-800">
+                        <div className="mb-4">
+                          <CartButton />
+                        </div>
+
                         {user ? (
                           <div className="space-y-4">
                             <div className="px-4">
@@ -254,6 +291,14 @@ export default function Navbar() {
                               onClick={handleMenuToggle}
                             >
                               <span className="text-base">Profile</span>
+                              <ChevronRight className="h-5 w-5 text-gray-400" />
+                            </Link>
+                            <Link
+                              href="/orders"
+                              className="flex items-center justify-between py-3 px-4 text-gray-300 hover:text-white rounded-lg"
+                              onClick={handleMenuToggle}
+                            >
+                              <span className="text-base">Orders</span>
                               <ChevronRight className="h-5 w-5 text-gray-400" />
                             </Link>
                             <Link
