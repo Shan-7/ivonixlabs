@@ -5,16 +5,13 @@ import type React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { Search, Upload, Calculator, Eye, ShoppingCart } from "lucide-react"
+import { Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import AnimatedBackground from "@/components/animated-background"
 import ProjectFormModal from "@/components/project-form-modal"
-import STLViewer from "@/components/stl-viewer"
-import QuoteCalculator from "@/components/quote-calculator"
-import { useCart } from "@/contexts/cart-context"
 
 const prints = [
   {
@@ -27,7 +24,6 @@ const prints = [
     finishTime: "8 hours",
     category: "Collectibles",
     volume: 125.5,
-    price: 799,
   },
   {
     id: "geometric-pikachu",
@@ -39,7 +35,6 @@ const prints = [
     finishTime: "6 hours",
     category: "Wall Art",
     volume: 89.3,
-    price: 1199,
   },
   {
     id: "glasses-stand",
@@ -51,7 +46,6 @@ const prints = [
     finishTime: "4 hours",
     category: "Functional",
     volume: 45.2,
-    price: 449,
   },
   {
     id: "cricket-keychain",
@@ -63,7 +57,6 @@ const prints = [
     finishTime: "2 hours",
     category: "Custom Accessories",
     volume: 12.8,
-    price: 199,
   },
   {
     id: "battery-organizer",
@@ -75,7 +68,6 @@ const prints = [
     finishTime: "6 hours",
     category: "Functional",
     volume: 156.7,
-    price: 1599,
   },
   {
     id: "rubiks-stand",
@@ -87,7 +79,6 @@ const prints = [
     finishTime: "8 hours",
     category: "Display",
     volume: 78.9,
-    price: 649,
   },
   {
     id: "iron-man-helmet",
@@ -98,7 +89,6 @@ const prints = [
     finishTime: "36 hours",
     category: "Cosplay",
     volume: 890.4,
-    price: 4999,
   },
   {
     id: "3d-benchy",
@@ -109,7 +99,6 @@ const prints = [
     finishTime: "2 hours",
     category: "Test Print",
     volume: 15.6,
-    price: 149,
   },
   {
     id: "arc-reactor",
@@ -121,17 +110,13 @@ const prints = [
     finishTime: "12 hours",
     category: "Cosplay",
     volume: 234.1,
-    price: 1899,
   },
 ]
 
 export default function ThreeDPrinting() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [showSTLViewer, setShowSTLViewer] = useState(false)
-  const [showQuoteCalculator, setShowQuoteCalculator] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const { addToCart } = useCart()
 
   const filteredPrints = prints.filter(
     (print) =>
@@ -144,26 +129,10 @@ export default function ThreeDPrinting() {
     const file = event.target.files?.[0]
     if (file && file.name.toLowerCase().endsWith(".stl")) {
       setSelectedFile(file)
-      setShowSTLViewer(true)
+      setIsModalOpen(true)
     } else {
       alert("Please upload a valid STL file")
     }
-  }
-
-  const handleAddToCart = (print: (typeof prints)[0]) => {
-    addToCart({
-      id: print.id,
-      name: print.name,
-      description: print.description,
-      price: print.price,
-      image: print.image,
-      category: print.category,
-      specifications: {
-        material: print.material,
-        finishTime: print.finishTime,
-        volume: print.volume,
-      },
-    })
   }
 
   return (
@@ -182,17 +151,19 @@ export default function ThreeDPrinting() {
             From collectibles to functional parts - bring your ideas to life with our professional 3D printing service
           </p>
 
-          {/* 3D Tools Section */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          {/* Upload Section */}
+          <div className="flex justify-center mb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-black/50 border border-gray-800 rounded-xl p-6 backdrop-blur-sm"
+              className="bg-black/50 border border-gray-800 rounded-xl p-8 backdrop-blur-sm max-w-md w-full"
             >
-              <Upload className="w-12 h-12 text-blue-500 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Upload & Visualize</h3>
-              <p className="text-gray-400 mb-4">Upload your STL file to visualize it in 3D and check dimensions</p>
+              <Upload className="w-16 h-16 text-blue-500 mb-6 mx-auto" />
+              <h3 className="text-2xl font-semibold mb-4 text-center">Upload & Get Quote</h3>
+              <p className="text-gray-400 mb-6 text-center">
+                Upload your STL file to get an instant quote for your 3D print
+              </p>
               <div className="relative">
                 <input
                   type="file"
@@ -200,44 +171,11 @@ export default function ThreeDPrinting() {
                   onChange={handleFileUpload}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
-                <Button className="w-full bg-blue-500 hover:bg-blue-600">
-                  <Upload className="w-4 h-4 mr-2" />
+                <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3">
+                  <Upload className="w-5 h-5 mr-2" />
                   Upload STL File
                 </Button>
               </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-black/50 border border-gray-800 rounded-xl p-6 backdrop-blur-sm"
-            >
-              <Eye className="w-12 h-12 text-green-500 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">3D Viewer</h3>
-              <p className="text-gray-400 mb-4">Interactive 3D visualization with rotation and zoom capabilities</p>
-              <Button className="w-full bg-green-500 hover:bg-green-600" onClick={() => setShowSTLViewer(true)}>
-                <Eye className="w-4 h-4 mr-2" />
-                Open 3D Viewer
-              </Button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-black/50 border border-gray-800 rounded-xl p-6 backdrop-blur-sm"
-            >
-              <Calculator className="w-12 h-12 text-yellow-500 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Instant Quote</h3>
-              <p className="text-gray-400 mb-4">Get real-time pricing based on volume, material, and complexity</p>
-              <Button
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
-                onClick={() => setShowQuoteCalculator(true)}
-              >
-                <Calculator className="w-4 h-4 mr-2" />
-                Calculate Quote
-              </Button>
             </motion.div>
           </div>
 
@@ -253,7 +191,6 @@ export default function ThreeDPrinting() {
 
           <div className="mb-8">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
                 type="search"
                 placeholder="Search prints..."
@@ -286,25 +223,18 @@ export default function ThreeDPrinting() {
                   </div>
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-sm text-green-400">Volume: {print.volume} cm³</span>
-                    <span className="text-lg font-bold text-yellow-400">₹{print.price}</span>
                   </div>
                   <div className="mb-4">
                     <span className="text-xs px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-500">
                       {print.category}
                     </span>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black"
-                      onClick={() => handleAddToCart(print)}
-                    >
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Add to Cart
-                    </Button>
-                    <Button variant="outline" className="bg-transparent" onClick={() => setIsModalOpen(true)}>
-                      Custom
-                    </Button>
-                  </div>
+                  <Button
+                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Get Quote
+                  </Button>
                 </div>
               </motion.div>
             ))}
@@ -369,8 +299,6 @@ export default function ThreeDPrinting() {
 
       {/* Modals */}
       <ProjectFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <STLViewer isOpen={showSTLViewer} onClose={() => setShowSTLViewer(false)} file={selectedFile} />
-      <QuoteCalculator isOpen={showQuoteCalculator} onClose={() => setShowQuoteCalculator(false)} />
     </div>
   )
 }

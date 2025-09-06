@@ -44,9 +44,10 @@ export default function Navbar() {
   }, [])
 
   const navItems = [
-    { href: "/3d-printing", label: "3D Printing" },
-    { href: "/products", label: "Products" },
+    { href: "/", label: "Home" },
     { href: "https://robonixkart.com/", label: "Store", external: true },
+    { href: "/ai-help", label: "AI Help" },
+    { href: "/3d-printing", label: "3D Printing" },
     { href: "/blog", label: "Blog", className: "text-yellow-500 hover:text-yellow-400" },
     { href: "/admin/users", label: "User Profiles", adminOnly: true },
   ]
